@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center py-8">
+    <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-xl">
+        <h1 class="text-2xl font-bold mb-6 text-center text-blue-700">History</h1>
+        {% if search_history %}
+            <ul class="list-disc list-inside text-gray-700">
+                {% for item in search_history %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-gray-600">You have no search history yet.</p>
+        {% endif %}
+        <div class="mt-6 text-center">
+            <a href="/" class="text-blue-600 hover:underline">Back to Search</a>
+        </div>
+    </div>
+</body>
+</html> 
