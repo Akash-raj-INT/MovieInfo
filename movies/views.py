@@ -1,26 +1,30 @@
-import requests
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from rest_framework import generics
 from .models import Movie
-from .serializers import MovieSerializer
 
 @login_required
 def search_movie(request):
-    movie_data = {}
-    # Get search history from session, or initialize as empty list
+    movie_data = None
     search_history = request.session.get('search_history', [])
 
     if 'title' in request.GET:
         title = request.GET['title']
-        url = f"http://www.omdbapi.com/?apikey=316fa37d&t={title}"
-        response = requests.get(url)
-        movie_data = response.json()
-        # Add to history if not already present
+        try:
+            movie = Movie.objects.get(title__iexact=title)
+            movie_data = {
+                'Title': movie.title,
+                'Year': movie.year,
+                'imdbID': movie.imdbID,
+                'Poster': movie.poster,
+                'imdbRating': movie.imdb_rating,
+                'Plot': movie.plot,
+                'Actors': movie.actors,
+            }
+        except Movie.DoesNotExist:
+            movie_data = None
         if title and title not in search_history:
-            search_history.insert(0, title)  # Most recent first
-            # Limit history to last 10 searches
+            search_history.insert(0, title)
             search_history = search_history[:10]
             request.session['search_history'] = search_history
 
@@ -28,6 +32,7 @@ def search_movie(request):
         'movie_data': movie_data,
         'search_history': search_history
     })
+
 
 def register(request):
     if request.method == 'POST':
@@ -44,30 +49,45 @@ def personal_history(request):
     search_history = request.session.get('search_history', [])
     return render(request, 'movies/personal_history.html', {'search_history': search_history})
 
+
 def dashboard(request):
-    # Show Bollywood movies using a Bollywood-related OMDb API query
-    url = "http://www.omdbapi.com/?apikey=316fa37d&s=dil&type=movie"
-    response = requests.get(url)
-    movies = []
-    if response.status_code == 200:
-        data = response.json()
-        if data.get('Response') == 'True':
-            movies = data.get('Search', [])
-    return render(request, 'movies/dashboard.html', {'movies': movies})
+    # Show all movies from the local database
+    movies = Movie.objects.all()
+    movie_list = []
+    for movie in movies:
+        movie_list.append({
+            'Title': movie.title,
+            'Year': movie.year,
+            'imdbID': movie.imdbID,
+            'Poster': movie.poster,
+        })
+    return render(request, 'movies/dashboard.html', {'movies': movie_list})
+
 
 def movie_detail(request, imdb_id):
-    url = f"http://www.omdbapi.com/?apikey=316fa37d&i={imdb_id}&plot=full"
-    response = requests.get(url)
-    movie = {}
-    if response.status_code == 200:
-        movie = response.json()
-    return render(request, 'movies/movie_detail.html', {'movie': movie})
-
-class MovieListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Movie.objects.all()
-    serializer_class = MovieSerializer
-
-class MovieRetrieveAPIView(generics.RetrieveAPIView):
-    queryset = Movie.objects.all()
-    serializer_class = MovieSerializer
-    lookup_field = 'id'
+    # Get movie from local database
+    try:
+        movie = Movie.objects.get(imdbID=imdb_id)
+        movie_data = {
+            'Title': movie.title,
+            'Year': movie.year,
+            'imdbID': movie.imdbID,
+            'Poster': movie.poster,
+            'Genre': movie.genre,
+            'Director': movie.director,
+            'Actors': movie.actors,
+            'Plot': movie.plot,
+            'Language': movie.language,
+            'Country': movie.country,
+            'Released': movie.released,
+            'Runtime': movie.runtime,
+            'Writer': movie.writer,
+            'Awards': movie.awards,
+            'BoxOffice': movie.box_office,
+            'Production': movie.production,
+            'Website': movie.website,
+            'imdbRating': movie.imdb_rating,
+        }
+    except Movie.DoesNotExist:
+        movie_data = None
+    return render(request, 'movies/movie_detail.html', {'movie': movie_data})

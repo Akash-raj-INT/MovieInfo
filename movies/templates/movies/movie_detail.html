@@ -3,54 +3,37 @@
 <head>
     <title>{{ movie.Title }} - Details</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(270deg, #e0c3fc, #8ec5fc, #f093fb, #f5576c, #4facfe, #43e97b, #38f9d7, #e0c3fc);
+            background-size: 1600% 1600%;
+            animation: gradientBG 18s ease infinite;
+        }
+        @keyframes gradientBG {
+            0% {background-position:0% 50%}
+            50% {background-position:100% 50%}
+            100% {background-position:0% 50%}
+        }
+    </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center py-8">
     <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-2xl">
-        {% if movie.Response == "True" %}
-            <div class="flex flex-col md:flex-row gap-6 items-center">
-                <img src="{{ movie.Poster }}" alt="Poster" class="w-40 rounded shadow" />
-                <div>
-                    <h2 class="text-2xl font-bold mb-2 text-gray-900">{{ movie.Title }} ({{ movie.Year }})</h2>
-                    <p class="mb-1 text-gray-800"><span class="font-semibold">Genre:</span> {{ movie.Genre }}</p>
-                    <p class="mb-1 text-gray-800"><span class="font-semibold">Director:</span> {{ movie.Director }}</p>
-                    <p class="mb-1 text-gray-800"><span class="font-semibold">Actors:</span> {{ movie.Actors }}</p>
-                    <p class="mb-1 text-gray-800"><span class="font-semibold">Plot:</span> {{ movie.Plot }}</p>
-                    <p class="mb-1 text-gray-800"><span class="font-semibold">Language:</span> {{ movie.Language }}</p>
-                    <p class="mb-1 text-gray-800"><span class="font-semibold">Country:</span> {{ movie.Country }}</p>
-                    <p class="mb-1 text-gray-800"><span class="font-semibold">Released:</span> {{ movie.Released }}</p>
-                    <p class="mb-1 text-gray-800"><span class="font-semibold">Runtime:</span> {{ movie.Runtime }}</p>
-                    <p class="mb-1 text-gray-800"><span class="font-semibold">Writer:</span> {{ movie.Writer }}</p>
-                    <p class="mb-1 text-gray-800"><span class="font-semibold">Awards:</span> {{ movie.Awards }}</p>
-                    <p class="mb-1 text-gray-800"><span class="font-semibold">Box Office:</span> {{ movie.BoxOffice }}</p>
-                    <p class="mb-1 text-gray-800"><span class="font-semibold">Production:</span> {{ movie.Production }}</p>
-                    <p class="mb-1 text-gray-800"><span class="font-semibold">Website:</span> 
-                        {% if movie.Website and movie.Website != 'N/A' %}
-                            <a href="{{ movie.Website }}" class="text-blue-600 hover:underline" target="_blank">Official Site</a>
-                        {% else %}
-                            N/A
-                        {% endif %}
-                    </p>
-                    <div class="mb-1 text-gray-800">
-                        <span class="font-semibold">Ratings:</span>
-                        {% if movie.Ratings %}
-                            <ul class="list-disc ml-6">
-                                {% for rating in movie.Ratings %}
-                                    <li>{{ rating.Source }}: {{ rating.Value }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            N/A
-                        {% endif %}
-                    </div>
-                    <p class="mb-1 text-gray-800"><span class="font-semibold">IMDB Rating:</span> {{ movie.imdbRating }}</p>
-                </div>
+        <div class="flex flex-col md:flex-row gap-8">
+            <img src="{{ movie.Poster|default:'https://via.placeholder.com/200x300?text=No+Image' }}"
+                 alt="Poster"
+                 class="w-48 h-72 object-cover rounded shadow mb-4 md:mb-0"
+                 onerror="this.onerror=null;this.src='https://via.placeholder.com/200x300?text=No+Image';" />
+            <div class="flex-1">
+                <h1 class="text-3xl font-bold text-blue-700 mb-2">{{ movie.Title }}</h1>
+                <p class="text-gray-600 mb-2"><span class="font-semibold">Year:</span> {{ movie.Year }}</p>
+                <p class="text-gray-600 mb-2"><span class="font-semibold">Genre:</span> {{ movie.Genre }}</p>
+                <p class="text-gray-600 mb-2"><span class="font-semibold">Director:</span> {{ movie.Director }}</p>
+                <p class="text-gray-600 mb-2"><span class="font-semibold">Actors:</span> {{ movie.Actors }}</p>
+                <p class="text-gray-600 mb-2"><span class="font-semibold">IMDB Rating:</span> {{ movie.imdbRating }}</p>
+                <p class="text-gray-600 mb-4"><span class="font-semibold">Plot:</span> {{ movie.Plot }}</p>
+                <a href="{% url 'dashboard' %}" class="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Back to Dashboard</a>
             </div>
-        {% else %}
-            <p class="text-red-600 font-semibold mt-4">Movie details not found.</p>
-        {% endif %}
-        <div class="mt-6 text-center">
-            <a href="{% url 'dashboard' %}" class="text-blue-600 hover:underline">Back to Dashboard</a>
         </div>
     </div>
 </body>
-</html> 
+</html>

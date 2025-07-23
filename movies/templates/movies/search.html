@@ -60,7 +60,7 @@
             </div>
         {% endif %}
 
-        {% if movie_data.Response == "True" %}
+        {% if movie_data %}
             <div class="flex flex-col md:flex-row gap-6 items-center">
                 <img src="{{ movie_data.Poster }}" alt="Poster" class="w-40 rounded shadow" />
                 <div>
@@ -70,8 +70,8 @@
                     <p class="mb-1"><span class="font-semibold">Actors:</span> {{ movie_data.Actors }}</p>
                 </div>
             </div>
-        {% elif movie_data.Response == "False" %}
-            <p class="text-red-600 font-semibold mt-4">No movie found.</p>
+        {% else %}
+            <p class="text-red-500 font-semibold mt-4">Movie not found.</p>
         {% endif %}
     </div>
 </body>
