@@ -1,10 +1,4 @@
-<<<<<<< HEAD
 Django==5.2.3
 djangorestframework==3.16.0
 gunicorn==23.0.0
-=======
-Django==5.2.3
-djangorestframework==3.16.0
-gunicorn==23.0.0
->>>>>>> b6620b7a9be18faff720e290a81b8f584436a1c3
-whitenoise==6.9.0 
+whitenoise==6.9.0
