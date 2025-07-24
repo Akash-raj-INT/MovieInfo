@@ -39,4 +39,4 @@ A full-stack Django web application for searching, browsing, and viewing detaile
 
 ---
 
-## visti : https://movieinfo-1uof.onrender.com/
+## visit : https://movieinfo-1uof.onrender.com/
